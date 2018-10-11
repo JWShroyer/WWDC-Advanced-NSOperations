@@ -29,6 +29,15 @@ class UKOperation: Operation {
 //        return ["state"]
 //    }
     
+    public override class func keyPathsForValuesAffectingValue(forKey key: String) -> Set<String> {
+        switch key {
+        case "isReady", "isExecuting", "isFinished":
+            return ["state"]
+        default:
+            return []
+        }
+    }
+    
     // MARK: State Management
     
     fileprivate enum State: Int, Comparable {

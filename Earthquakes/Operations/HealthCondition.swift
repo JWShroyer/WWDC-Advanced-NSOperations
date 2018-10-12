@@ -75,7 +75,7 @@ struct HealthCondition: OperationCondition {
             failed(unauthorizedShareTypes: Set(unauthorizedShareTypes), completion: completion)
         }
         else {
-            completion(.Satisfied)
+            completion(.satisfied)
         }
     }
     
@@ -84,13 +84,13 @@ struct HealthCondition: OperationCondition {
         
         let typeOfSelf = type(of: self)
         
-        let error = NSError(code: .ConditionFailed, userInfo: [
+        let error = NSError(code: .conditionFailed, userInfo: [
             OperationConditionKey: typeOfSelf.name,
             typeOfSelf.healthDataAvailable: HKHealthStore.isHealthDataAvailable(),
             typeOfSelf.unauthorizedShareTypesKey: unauthorizedShareTypes
         ])
 
-        completion(.Failed(error))
+        completion(.failed(error))
     }
 }
 

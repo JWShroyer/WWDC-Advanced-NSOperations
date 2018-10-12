@@ -39,20 +39,20 @@ struct NegatedCondition<T: OperationCondition>: OperationCondition {
     
     func evaluateForOperation(operation: Operation, completion: @escaping (OperationConditionResult) -> Void) {
         condition.evaluateForOperation(operation: operation) { result in
-            if result == .Satisfied {
+            if result == .satisfied {
                 // If the composed condition succeeded, then this one failed.
                 
                 let typeOfSelf = type(of: self)
-                let error = NSError(code: .ConditionFailed, userInfo: [
+                let error = NSError(code: .conditionFailed, userInfo: [
                     OperationConditionKey: typeOfSelf.name,
                     typeOfSelf.negatedConditionKey: type(of: self.condition).name
                     ])
                 
-                completion(.Failed(error))
+                completion(.failed(error))
             }
             else {
                 // If the composed condition failed, then this one succeeded.
-                completion(.Satisfied)
+                completion(.satisfied)
             }
         }
     }

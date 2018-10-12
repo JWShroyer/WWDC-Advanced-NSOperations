@@ -42,47 +42,47 @@ class UKOperation: Operation {
     
     fileprivate enum State: Int, Comparable {
         /// The initial state of an `Operation`.
-        case Initialized
+        case initialized
         
         /// The `Operation` is ready to begin evaluating conditions.
-        case Pending
+        case pending
         
         /// The `Operation` is evaluating conditions.
-        case EvaluatingConditions
+        case evaluatingConditions
         
         /**
             The `Operation`'s conditions have all been satisfied, and it is ready
             to execute.
         */
-        case Ready
+        case ready
         
         /// The `Operation` is executing.
-        case Executing
+        case executing
         
         /**
             Execution of the `Operation` has finished, but it has not yet notified
             the queue of this.
         */
-        case Finishing
+        case finishing
         
         /// The `Operation` has finished executing.
-        case Finished
+        case finished
         
         func canTransitionToState(target: State) -> Bool {
             switch (self, target) {
-                case (.Initialized, .Pending):
+                case (.initialized, .pending):
                     return true
-                case (.Pending, .EvaluatingConditions):
+                case (.pending, .evaluatingConditions):
                     return true
-                case (.EvaluatingConditions, .Ready):
+                case (.evaluatingConditions, .ready):
                     return true
-                case (.Ready, .Executing):
+                case (.ready, .executing):
                     return true
-                case (.Ready, .Finishing):
+                case (.ready, .finishing):
                     return true
-                case (.Executing, .Finishing):
+                case (.executing, .finishing):
                     return true
-                case (.Finishing, .Finished):
+                case (.finishing, .finished):
                     return true
                 default:
                     return false
@@ -95,11 +95,11 @@ class UKOperation: Operation {
         if appropriate.
     */
     func willEnqueue() {
-        state = .Pending
+        state = .pending
     }
     
     /// Private storage for the `state` property that will be KVO observed.
-    private var _state = State.Initialized
+    private var _state = State.initialized
     
     /// A lock to guard reads and writes to the `_state` property
     private let stateLock = NSLock()
@@ -123,7 +123,7 @@ class UKOperation: Operation {
             willChangeValue(forKey: "state")
             
             stateLock.withCriticalScope { () -> Void in
-                guard _state != .Finished else {
+                guard _state != .finished else {
                     return
                 }
                 
@@ -139,11 +139,11 @@ class UKOperation: Operation {
     override var isReady: Bool {
         switch state {
             
-            case .Initialized:
+            case .initialized:
                 // If the operation has been cancelled, "isReady" should return true
                 return isCancelled
             
-            case .Pending:
+            case .pending:
                 // If the operation has been cancelled, "isReady" should return true
                 guard !isCancelled else {
                     return true
@@ -157,7 +157,7 @@ class UKOperation: Operation {
                 // Until conditions have been evaluated, "isReady" returns false
                 return false
             
-            case .Ready:
+            case .ready:
                 return super.isReady || isCancelled
             
             default:
@@ -171,28 +171,28 @@ class UKOperation: Operation {
         }
 
         set {
-            assert(state < .Executing, "Cannot modify userInitiated after execution has begun.")
+            assert(state < .executing, "Cannot modify userInitiated after execution has begun.")
 
             qualityOfService = newValue ? .userInitiated : .default
         }
     }
     
     override var isExecuting: Bool {
-        return state == .Executing
+        return state == .executing
     }
     
     override var isFinished: Bool {
-        return state == .Finished
+        return state == .finished
     }
     
     private func evaluateConditions() {
-        assert(state == .Pending && !isCancelled, "evaluateConditions() was called out-of-order")
+        assert(state == .pending && !isCancelled, "evaluateConditions() was called out-of-order")
 
-        state = .EvaluatingConditions
+        state = .evaluatingConditions
         
         OperationConditionEvaluator.evaluate(conditions: conditions, operation: self) { failures in
             self._internalErrors += failures
-            self.state = .Ready
+            self.state = .ready
         }
     }
     
@@ -201,7 +201,7 @@ class UKOperation: Operation {
     private(set) var conditions = [OperationCondition]()
 
     func addCondition(condition: OperationCondition) {
-        assert(state < .EvaluatingConditions, "Cannot modify conditions after execution has begun.")
+        assert(state < .evaluatingConditions, "Cannot modify conditions after execution has begun.")
 
         conditions.append(condition)
     }
@@ -209,13 +209,13 @@ class UKOperation: Operation {
     private(set) var observers = [OperationObserver]()
     
     func addObserver(observer: OperationObserver) {
-        assert(state < .Executing, "Cannot modify observers after execution has begun.")
+        assert(state < .executing, "Cannot modify observers after execution has begun.")
         
         observers.append(observer)
     }
     
     override func addDependency(_ operation: Operation) {
-        assert(state < .Executing, "Dependencies cannot be modified after execution has begun.")
+        assert(state < .executing, "Dependencies cannot be modified after execution has begun.")
 
         super.addDependency(operation)
     }
@@ -226,17 +226,17 @@ class UKOperation: Operation {
         // Operation.start() contains important logic that shouldn't be bypassed.
         super.start()
         
-        // If the operation has been cancelled, we still need to enter the "Finished" state.
+        // If the operation has been cancelled, we still need to enter the "finished" state.
         if isCancelled {
             finish()
         }
     }
     
     override final func main() {
-        assert(state == .Ready, "This operation must be performed on an operation queue.")
+        assert(state == .ready, "This operation must be performed on an operation queue.")
 
         if _internalErrors.isEmpty && !isCancelled {
-            state = .Executing
+            state = .executing
             
             for observer in observers {
                 observer.operationDidStart(operation: self)
@@ -307,7 +307,7 @@ class UKOperation: Operation {
     final func finish(errors: [Error] = []) {
         if !hasFinishedAlready {
             hasFinishedAlready = true
-            state = .Finishing
+            state = .finishing
             
             let combinedErrors = _internalErrors + errors
             finished(errors: combinedErrors)
@@ -316,7 +316,7 @@ class UKOperation: Operation {
                 observer.operationDidFinish(operation: self, errors: combinedErrors)
             }
             
-            state = .Finished
+            state = .finished
         }
     }
     

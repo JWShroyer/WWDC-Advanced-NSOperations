@@ -50,11 +50,11 @@ protocol OperationCondition {
     failed with an error.
 */
 enum OperationConditionResult: Equatable {
-    case Satisfied
-    case Failed(Error)
+    case satisfied
+    case failed(Error)
     
     var error: Error? {
-        if case .Failed(let error) = self {
+        if case .failed(let error) = self {
             return error
         }
         
@@ -64,9 +64,9 @@ enum OperationConditionResult: Equatable {
 
 func ==(lhs: OperationConditionResult, rhs: OperationConditionResult) -> Bool {
     switch (lhs, rhs) {
-        case (.Satisfied, .Satisfied):
+        case (.satisfied, .satisfied):
             return true
-        case (.Failed(let lError), .Failed(let rError)) where lError == rError:
+        case (.failed(let lError), .failed(let rError)) where lError == rError:
             return true
         default:
             return false
@@ -108,7 +108,7 @@ struct OperationConditionEvaluator {
              */
             
             if operation.isCancelled {
-                failures.append(NSError(code: .ConditionFailed))
+                failures.append(NSError(code: .conditionFailed))
             }
             
             completion(failures)

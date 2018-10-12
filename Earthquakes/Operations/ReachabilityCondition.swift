@@ -33,17 +33,17 @@ struct ReachabilityCondition: OperationCondition {
     func evaluateForOperation(operation: Operation, completion: @escaping (OperationConditionResult) -> Void) {
         ReachabilityController.requestReachability(url: host) { reachable in
             if reachable {
-                completion(.Satisfied)
+                completion(.satisfied)
             }
             else {
                 let typeOfSelf = type(of: self)
                 
-                let error = NSError(code: .ConditionFailed, userInfo: [
+                let error = NSError(code: .conditionFailed, userInfo: [
                     OperationConditionKey: typeOfSelf.name,
                     typeOfSelf.hostKey: self.host
                 ])
                 
-                completion(.Failed(error))
+                completion(.failed(error))
             }
         }
     }

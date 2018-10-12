@@ -24,8 +24,8 @@ class DelayOperation: UKOperation {
     // MARK: Types
 
     private enum Delay {
-        case Interval(TimeInterval)
-        case Date(Date)
+        case interval(TimeInterval)
+        case date(Date)
     }
     
     // MARK: Properties
@@ -35,12 +35,12 @@ class DelayOperation: UKOperation {
     // MARK: Initialization
     
     init(interval: TimeInterval) {
-        delay = .Interval(interval)
+        delay = .interval(interval)
         super.init()
     }
     
     init(until date: Date) {
-        delay = .Date(date)
+        delay = .date(date)
         super.init()
     }
     
@@ -49,10 +49,10 @@ class DelayOperation: UKOperation {
         
         // Figure out how long we should wait for.
         switch delay {
-            case .Interval(let theInterval):
+            case .interval(let theInterval):
                 interval = theInterval
 
-            case .Date(let date):
+            case .date(let date):
                 interval = date.timeIntervalSinceNow
         }
         

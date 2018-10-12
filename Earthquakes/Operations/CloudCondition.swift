@@ -45,16 +45,16 @@ struct CloudContainerCondition: OperationCondition {
             if let error = error {
                 let typeOfSelf = type(of: self)
                 
-                let conditionError = NSError(code: .ConditionFailed, userInfo: [
+                let conditionError = NSError(code: .conditionFailed, userInfo: [
                     OperationConditionKey: typeOfSelf.name,
                     typeOfSelf.containerKey: self.container,
                     NSUnderlyingErrorKey: error
                 ])
 
-                completion(.Failed(conditionError))
+                completion(.failed(conditionError))
             }
             else {
-                completion(.Satisfied)
+                completion(.satisfied)
             }
         }
     }

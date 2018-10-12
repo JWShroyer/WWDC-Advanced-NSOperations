@@ -28,14 +28,14 @@ struct PassbookCondition: OperationCondition {
     
     func evaluateForOperation(operation: Operation, completion: (OperationConditionResult) -> Void) {
         if PKPassLibrary.isPassLibraryAvailable() {
-            completion(.Satisfied)
+            completion(.satisfied)
         }
         else {
-            let error = NSError(code: .ConditionFailed, userInfo: [
+            let error = NSError(code: .conditionFailed, userInfo: [
                 OperationConditionKey: type(of: self).name
             ])
 
-            completion(.Failed(error))
+            completion(.failed(error))
         }
     }
 }

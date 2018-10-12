@@ -18,10 +18,10 @@ struct UserNotificationCondition: OperationCondition {
     
     enum Behavior {
         /// Merge the new `UIUserNotificationSettings` with the `currentUserNotificationSettings`.
-        case Merge
+        case merge
 
         /// Replace the `currentUserNotificationSettings` with the new `UIUserNotificationSettings`.
-        case Replace
+        case replace
     }
     
     static let name = "UserNotification"
@@ -43,12 +43,12 @@ struct UserNotificationCondition: OperationCondition {
             be registered.
 
         - parameter behavior: The way in which the `settings` should be applied
-            to the `application`. By default, this value is `.Merge`, which means
+            to the `application`. By default, this value is `.merge`, which means
             that the `settings` will be combined with the existing settings on the
-            `application`. You may also specify `.Replace`, which means the `settings`
+            `application`. You may also specify `.replace`, which means the `settings`
             will overwrite the exisiting settings.
     */
-    init(settings: UIUserNotificationSettings, application: UIApplication, behavior: Behavior = .Merge) {
+    init(settings: UIUserNotificationSettings, application: UIApplication, behavior: Behavior = .merge) {
         self.settings = settings
         self.application = application
         self.behavior = behavior
@@ -65,17 +65,17 @@ struct UserNotificationCondition: OperationCondition {
         
         switch (current, settings)  {
         case (let current?, let settings) where current.contains(settings: settings):
-            result = .Satisfied
+            result = .satisfied
             
         default:
             let typeOfSelf = type(of: self)
-            let error = NSError(code: .ConditionFailed, userInfo: [
+            let error = NSError(code: .conditionFailed, userInfo: [
                 OperationConditionKey: typeOfSelf.name,
                 typeOfSelf.currentSettings: current ?? NSNull(),
                 typeOfSelf.desiredSettings: settings
                 ])
             
-            result = .Failed(error)
+            result = .failed(error)
         }
         
         completion(result)
@@ -108,7 +108,7 @@ private class UserNotificationPermissionOperation: UKOperation {
             let settingsToRegister: UIUserNotificationSettings
             
             switch (current, self.behavior) {
-            case (let currentSettings?, .Merge):
+            case (let currentSettings?, .merge):
                 settingsToRegister = currentSettings.settingsByMerging(settings: self.settings)
                 
             default:

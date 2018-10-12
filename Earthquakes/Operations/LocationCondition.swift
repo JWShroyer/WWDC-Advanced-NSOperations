@@ -15,8 +15,8 @@ struct LocationCondition: OperationCondition {
         enum has more case values than are necessary for our purposes.
     */
     enum Usage {
-        case WhenInUse
-        case Always
+        case whenInUse
+        case always
     }
     
     static let name = "Location"
@@ -46,7 +46,7 @@ struct LocationCondition: OperationCondition {
             // The service is enabled, and we have "Always" permission -> condition satisfied.
             break
             
-        case (true, .WhenInUse, .authorizedWhenInUse):
+        case (true, .whenInUse, .authorizedWhenInUse):
             /*
              The service is enabled, and we have and need "WhenInUse"
              permission -> condition satisfied.
@@ -64,7 +64,7 @@ struct LocationCondition: OperationCondition {
              */
             let typeOfSelf = type(of: self)
             
-            error = NSError(code: .ConditionFailed, userInfo: [
+            error = NSError(code: .conditionFailed, userInfo: [
                 OperationConditionKey: typeOfSelf.name,
                 typeOfSelf.locationServicesEnabledKey: enabled,
                 typeOfSelf.authorizationStatusKey: Int(actual.rawValue)
@@ -72,10 +72,10 @@ struct LocationCondition: OperationCondition {
         }
         
         if let error = error {
-            completion(.Failed(error))
+            completion(.failed(error))
         }
         else {
-            completion(.Satisfied)
+            completion(.satisfied)
         }
     }
 }
@@ -104,7 +104,7 @@ private class LocationPermissionOperation: UKOperation {
             need to handle the "upgrade" (.WhenInUse -> .Always) case.
          */
         switch (CLLocationManager.authorizationStatus(), usage) {
-        case (.notDetermined, _), (.authorizedWhenInUse, .Always):
+        case (.notDetermined, _), (.authorizedWhenInUse, .always):
             DispatchQueue.main.async {
                 self.requestPermission()
             }
@@ -121,11 +121,11 @@ private class LocationPermissionOperation: UKOperation {
         let key: String
         
         switch usage {
-            case .WhenInUse:
+            case .whenInUse:
                 key = "NSLocationWhenInUseUsageDescription"
                 manager?.requestWhenInUseAuthorization()
         
-            case .Always:
+            case .always:
                 key = "NSLocationAlwaysUsageDescription"
                 manager?.requestAlwaysAuthorization()
         }

@@ -17,8 +17,8 @@ extension Notification.Name {
 }
 
 private enum RemoteRegistrationResult {
-    case Token(Data)
-    case Error(Error)
+    case token(Data)
+    case error(Error)
 }
 
 /// A condition for verifying that the app has the ability to receive push notifications.
@@ -51,16 +51,16 @@ struct RemoteNotificationCondition: OperationCondition {
         */
         RemoteNotificationQueue.addOperation(RemoteNotificationPermissionOperation(application: application) { result in
             switch result {
-                case .Token(_):
-                    completion(.Satisfied)
+                case .token(_):
+                    completion(.satisfied)
 
-                case .Error(let underlyingError):
-                    let error = NSError(code: .ConditionFailed, userInfo: [
+                case .error(let underlyingError):
+                    let error = NSError(code: .conditionFailed, userInfo: [
                         OperationConditionKey: type(of: self).name,
                         NSUnderlyingErrorKey: underlyingError
                     ])
 
-                    completion(.Failed(error))
+                    completion(.failed(error))
             }
         })
     }
@@ -110,10 +110,10 @@ private class RemoteNotificationPermissionOperation: UKOperation {
         let userInfo = notification.userInfo
 
         if let token = userInfo?["token"] as? Data {
-            handler(.Token(token))
+            handler(.token(token))
         }
         else if let error = userInfo?["error"] as? Error {
-            handler(.Error(error))
+            handler(.error(error))
         }
         else {
             fatalError("Received a notification without a token and without an error.")

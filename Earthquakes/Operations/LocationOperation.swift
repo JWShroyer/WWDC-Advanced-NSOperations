@@ -28,7 +28,7 @@ class LocationOperation: UKOperation, CLLocationManagerDelegate {
         self.accuracy = accuracy
         self.handler = locationHandler
         super.init()
-        addCondition(condition: LocationCondition(usage: .WhenInUse))
+        addCondition(condition: LocationCondition(usage: .whenInUse))
         addCondition(condition: MutuallyExclusive<CLLocationManager>())
     }
     

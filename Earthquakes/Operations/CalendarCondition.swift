@@ -28,18 +28,18 @@ struct CalendarCondition: OperationCondition {
     func evaluateForOperation(operation: Operation, completion: (OperationConditionResult) -> Void) {
         switch EKEventStore.authorizationStatus(for: entityType) {
         case .authorized:
-                completion(.Satisfied)
+                completion(.satisfied)
 
             default:
                 // We are not authorized to access entities of this type.
                 let typeOfSelf = type(of: self)
                 
-                let error = NSError(code: .ConditionFailed, userInfo: [
+                let error = NSError(code: .conditionFailed, userInfo: [
                     OperationConditionKey: typeOfSelf.name,
                     typeOfSelf.entityTypeKey: entityType.rawValue
                 ])
                 
-                completion(.Failed(error))
+                completion(.failed(error))
         }
     }
 }

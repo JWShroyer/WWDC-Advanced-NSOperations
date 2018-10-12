@@ -68,7 +68,7 @@ class GetEarthquakesOperation: GroupOperation {
         let errorReason = (error.domain, error.code, error.userInfo[OperationConditionKey] as? String)
         
         // These are examples of errors for which we might choose to display an error to the user
-        let failedReachability = (OperationErrorDomain, OperationErrorCode.ConditionFailed, ReachabilityCondition.name)
+        let failedReachability = (OperationErrorDomain, OperationErrorCode.conditionFailed, ReachabilityCondition.name)
         
         let failedJSON = (NSCocoaErrorDomain, NSPropertyListReadCorruptError, nil as String?)
 

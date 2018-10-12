@@ -25,14 +25,14 @@ struct PhotosCondition: OperationCondition {
     func evaluateForOperation(operation: Operation, completion: (OperationConditionResult) -> Void) {
         switch PHPhotoLibrary.authorizationStatus() {
         case .authorized:
-                completion(.Satisfied)
+                completion(.satisfied)
 
             default:
-                let error = NSError(code: .ConditionFailed, userInfo: [
+                let error = NSError(code: .conditionFailed, userInfo: [
                     OperationConditionKey: type(of: self).name
                 ])
 
-                completion(.Failed(error))
+                completion(.failed(error))
         }
     }
 }

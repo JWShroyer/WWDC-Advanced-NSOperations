@@ -33,15 +33,15 @@ struct NoCancelledDependencies: OperationCondition {
         if !cancelled.isEmpty {
             let typeOfSelf = type(of: self)
             // At least one dependency was cancelled; the condition was not satisfied.
-            let error = NSError(code: .ConditionFailed, userInfo: [
+            let error = NSError(code: .conditionFailed, userInfo: [
                 OperationConditionKey: typeOfSelf.name,
                 typeOfSelf.cancelledDependenciesKey: cancelled
             ])
             
-            completion(.Failed(error))
+            completion(.failed(error))
         }
         else {
-            completion(.Satisfied)
+            completion(.satisfied)
         }
     }
 }

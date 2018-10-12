@@ -11,8 +11,8 @@ import Foundation
 let OperationErrorDomain = "OperationErrors"
 
 enum OperationErrorCode: Int {
-    case ConditionFailed = 1
-    case ExecutionFailed = 2
+    case conditionFailed = 1
+    case executionFailed = 2
 }
 
 extension NSError {

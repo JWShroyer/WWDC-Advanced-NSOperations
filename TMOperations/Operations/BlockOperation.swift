@@ -9,10 +9,10 @@ This code shows how to create a simple subclass of Operation.
 import Foundation
 
 /// A closure type that takes a closure as its parameter.
-typealias OperationBlock = ( @escaping () -> Void) -> Void
+public typealias OperationBlock = ( @escaping () -> Void) -> Void
 
 /// A sublcass of `Operation` to execute a closure.
-class UKBlockOperation: UKOperation {
+public class TMBlockOperation: TMOperation {
     private let block: OperationBlock?
     
     /**
@@ -24,7 +24,7 @@ class UKBlockOperation: UKOperation {
             will never finish executing. If this parameter is `nil`, the operation
             will immediately finish.
     */
-    init(block: ((@escaping () -> Void) -> Void)? = nil) {
+    public init(block: ((@escaping () -> Void) -> Void)? = nil) {
         self.block = block
         super.init()
     }
@@ -37,7 +37,7 @@ class UKBlockOperation: UKOperation {
             the designated initializer). The operation will be automatically ended
             after the `mainQueueBlock` is executed.
     */
-    convenience init(mainQueueBlock: @escaping () -> Void) {
+    public convenience init(mainQueueBlock: @escaping () -> Void) {
         self.init(block: { continuation in
             DispatchQueue.main.async {
                 mainQueueBlock()
@@ -46,7 +46,7 @@ class UKBlockOperation: UKOperation {
         })
     }
     
-    override func execute() {
+    public override func execute() {
         guard let block = block else {
             finish()
             return

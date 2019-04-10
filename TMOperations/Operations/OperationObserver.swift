@@ -12,18 +12,18 @@ import Foundation
     The protocol that types may implement if they wish to be notified of significant
     operation lifecycle events.
 */
-protocol OperationObserver {
+public protocol OperationObserver {
     
     /// Invoked immediately prior to the `Operation`'s `execute()` method.
-    func operationDidStart(operation: UKOperation)
+    func operationDidStart(operation: TMOperation)
     
     /// Invoked when `Operation.produceOperation(_:)` is executed.
-    func operation(operation: UKOperation, didProduceOperation newOperation: Operation)
+    func operation(operation: TMOperation, didProduceOperation newOperation: Operation)
     
     /**
         Invoked as an `Operation` finishes, along with any errors produced during
         execution (or readiness evaluation).
     */
-    func operationDidFinish(operation: UKOperation, errors: [Error])
+    func operationDidFinish(operation: TMOperation, errors: [Error])
     
 }

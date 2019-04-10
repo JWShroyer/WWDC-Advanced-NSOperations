@@ -10,7 +10,7 @@ This file shows an example of implementing the OperationCondition protocol.
 
 import UIKit
     
-private let RemoteNotificationQueue = UKOperationQueue()
+private let RemoteNotificationQueue = TMOperationQueue()
 
 extension Notification.Name {
     fileprivate static let remoteNotification = Notification.Name(rawValue: "RemoteNotificationPermissionNotification")
@@ -22,29 +22,29 @@ private enum RemoteRegistrationResult {
 }
 
 /// A condition for verifying that the app has the ability to receive push notifications.
-struct RemoteNotificationCondition: OperationCondition {
-    static let name = "RemoteNotification"
-    static let isMutuallyExclusive = false
+public struct RemoteNotificationCondition: OperationCondition {
+    public static let name = "RemoteNotification"
+    public static let isMutuallyExclusive = false
     
-    static func didReceiveNotificationToken(token: Data) {
+    public static func didReceiveNotificationToken(token: Data) {
         NotificationCenter.default.post(name: .remoteNotification, object: nil, userInfo: ["token": token])
     }
     
-    static func didFailToRegister(error: Error) {
+    public static func didFailToRegister(error: Error) {
         NotificationCenter.default.post(name: .remoteNotification, object: nil, userInfo: ["error": error])
     }
     
     let application: UIApplication
     
-    init(application: UIApplication) {
+    public init(application: UIApplication) {
         self.application = application
     }
     
-    func dependencyForOperation(operation: Operation) -> Operation? {
+    public func dependencyForOperation(operation: Operation) -> Operation? {
         return RemoteNotificationPermissionOperation(application: application, handler: { _ in })
     }
     
-    func evaluateForOperation(operation: Operation, completion: @escaping (OperationConditionResult) -> Void) {
+    public func evaluateForOperation(operation: Operation, completion: @escaping (OperationConditionResult) -> Void) {
         /*
             Since evaluation requires executing an operation, use a private operation
             queue.
@@ -77,7 +77,7 @@ struct RemoteNotificationCondition: OperationCondition {
         `RemoteNotificationCondition.didFailToRegister(_:)` in the appropriate
         `UIApplicationDelegate` method, as shown in the `AppDelegate.swift` file.
 */
-private class RemoteNotificationPermissionOperation: UKOperation {
+private class RemoteNotificationPermissionOperation: TMOperation {
     let application: UIApplication
     private let handler: (RemoteRegistrationResult) -> Void
     

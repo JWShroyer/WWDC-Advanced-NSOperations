@@ -7,9 +7,10 @@ This file sets up the operations to download and parse earthquake data. It will 
 */
 
 import CoreData
+import TMOperations
 
 /// A composite `Operation` to both download and parse earthquake data.
-class GetEarthquakesOperation: GroupOperation {
+class GetEarthquakesOperation: TMGroupOperation {
     // MARK: Properties
     
     let downloadOperation: DownloadEarthquakesOperation

@@ -8,11 +8,12 @@ A static UITableViewController to display details of an earthquake
 
 import UIKit
 import MapKit
+import TMOperations
 
 class EarthquakeTableViewController: UITableViewController {
     // MARK: Properties
 
-    var queue: UKOperationQueue?
+    var queue: TMOperationQueue?
     var earthquake: Earthquake?
     var locationRequest: LocationOperation?
     
@@ -91,7 +92,7 @@ class EarthquakeTableViewController: UITableViewController {
             an `Operation`, we can make it mutually exclusive with other operations
             that modify the view controller hierarchy.
         */
-        let shareOperation = UKBlockOperation { (continuation: @escaping () -> Void) in
+        let shareOperation = TMBlockOperation { (continuation: @escaping () -> Void) in
             DispatchQueue.main.async {
                 let shareSheet = UIActivityViewController(activityItems: items, applicationActivities: nil)
                 

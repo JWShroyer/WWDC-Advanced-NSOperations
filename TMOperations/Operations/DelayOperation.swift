@@ -20,7 +20,7 @@ import Foundation
     If the interval is negative, or the `NSDate` is in the past, then this operation
     immediately finishes.
 */
-class DelayOperation: UKOperation {
+public class DelayOperation: TMOperation {
     // MARK: Types
 
     private enum Delay {
@@ -34,17 +34,17 @@ class DelayOperation: UKOperation {
     
     // MARK: Initialization
     
-    init(interval: TimeInterval) {
+    public init(interval: TimeInterval) {
         delay = .interval(interval)
         super.init()
     }
     
-    init(until date: Date) {
+    public init(until date: Date) {
         delay = .date(date)
         super.init()
     }
     
-    override func execute() {
+    override public func execute() {
         let interval: TimeInterval
         
         // Figure out how long we should wait for.
@@ -70,7 +70,7 @@ class DelayOperation: UKOperation {
         }
     }
     
-    override func cancel() {
+    override public func cancel() {
         super.cancel()
         // Cancelling the operation means we don't want to wait anymore.
         self.finish()

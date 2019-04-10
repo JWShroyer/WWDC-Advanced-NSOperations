@@ -8,9 +8,10 @@ This file contains the code to present more information about an earthquake as a
 
 import Foundation
 import SafariServices
+import TMOperations
 
 /// An `Operation` to display an `NSURL` in an app-modal `SFSafariViewController`.
-class MoreInformationOperation: UKOperation {
+class MoreInformationOperation: TMOperation {
     // MARK: Properties
 
     let url: URL
@@ -35,7 +36,9 @@ class MoreInformationOperation: UKOperation {
     
     private func showSafariViewController() {
         if let context = UIApplication.shared.keyWindow?.rootViewController {
-            let safari = SFSafariViewController(url: url, entersReaderIfAvailable: false)
+            let configuration = SFSafariViewController.Configuration()
+            configuration.entersReaderIfAvailable = true
+            let safari = SFSafariViewController(url: url, configuration: configuration)
             safari.delegate = self
             context.present(safari, animated: true, completion: nil)
         }

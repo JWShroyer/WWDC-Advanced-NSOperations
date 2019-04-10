@@ -8,13 +8,13 @@ This file contains the fundamental logic relating to Operation conditions.
 
 import Foundation
 
-let OperationConditionKey = "OperationCondition"
+public let OperationConditionKey = "OperationCondition"
 
 /**
     A protocol for defining conditions that must be satisfied in order for an
     operation to begin execution.
 */
-protocol OperationCondition {
+public protocol OperationCondition {
     /**
         The name of the condition. This is used in userInfo dictionaries of `.ConditionFailed`
         errors as the value of the `OperationConditionKey` key.
@@ -37,7 +37,7 @@ protocol OperationCondition {
         - note: Only a single operation may be returned as a dependency. If you
             find that you need to return multiple operations, then you should be
             expressing that as multiple conditions. Alternatively, you could return
-            a single `GroupOperation` that executes multiple operations internally.
+            a single `TMGroupOperation` that executes multiple operations internally.
     */
     func dependencyForOperation(operation: Operation) -> Operation?
     
@@ -49,7 +49,7 @@ protocol OperationCondition {
     An enum to indicate whether an `OperationCondition` was satisfied, or if it
     failed with an error.
 */
-enum OperationConditionResult: Equatable {
+public enum OperationConditionResult: Equatable {
     case satisfied
     case failed(Error)
     
@@ -62,7 +62,7 @@ enum OperationConditionResult: Equatable {
     }
 }
 
-func ==(lhs: OperationConditionResult, rhs: OperationConditionResult) -> Bool {
+public func ==(lhs: OperationConditionResult, rhs: OperationConditionResult) -> Bool {
     switch (lhs, rhs) {
         case (.satisfied, .satisfied):
             return true
@@ -73,7 +73,7 @@ func ==(lhs: OperationConditionResult, rhs: OperationConditionResult) -> Bool {
     }
 }
 
-func ==(lhs: Error, rhs: Error) -> Bool {
+public func ==(lhs: Error, rhs: Error) -> Bool {
     let lhsError = lhs as NSError
     let rhsError = rhs as NSError
     return lhsError.code == rhsError.code && lhsError.domain == rhsError.domain

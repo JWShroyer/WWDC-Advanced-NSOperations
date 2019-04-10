@@ -15,12 +15,12 @@ import Foundation
     In general, implementing `OperationQueueDelegate` is not necessary; you would
     want to use an `OperationObserver` instead. However, there are a couple of
     situations where using `OperationQueueDelegate` can lead to simpler code.
-    For example, `GroupOperation` is the delegate of its own internal
+    For example, `TMGroupOperation` is the delegate of its own internal
     `OperationQueue` and uses it to manage dependencies.
 */
-@objc protocol UKOperationQueueDelegate: NSObjectProtocol {
-    @objc optional func operationQueue(operationQueue: UKOperationQueue, willAddOperation operation: Operation)
-    @objc optional func operationQueue(operationQueue: UKOperationQueue, operationDidFinish operation: Operation, withErrors errors: [Error])
+@objc public protocol TMOperationQueueDelegate: NSObjectProtocol {
+    @objc optional func operationQueue(operationQueue: TMOperationQueue, willAddOperation operation: Operation)
+    @objc optional func operationQueue(operationQueue: TMOperationQueue, operationDidFinish operation: Operation, withErrors errors: [Error])
 }
 
 /**
@@ -31,11 +31,11 @@ import Foundation
     - Extracting generated dependencies from operation conditions
     - Setting up dependencies to enforce mutual exclusivity
 */
-class UKOperationQueue: OperationQueue {
-    weak var delegate: UKOperationQueueDelegate?
+public class TMOperationQueue: OperationQueue {
+    public weak var delegate: TMOperationQueueDelegate?
     
-    override func addOperation(_ operation: Operation) {
-        if let op = operation as? UKOperation {
+    override public func addOperation(_ operation: Operation) {
+        if let op = operation as? TMOperation {
             // Set up a `BlockObserver` to invoke the `OperationQueueDelegate` method.
             let delegate = BlockObserver(
                 startHandler: nil,
@@ -106,7 +106,7 @@ class UKOperationQueue: OperationQueue {
         super.addOperation(operation)
     }
     
-    override func addOperations(_ operations: [Operation], waitUntilFinished wait: Bool) {
+    override public func addOperations(_ operations: [Operation], waitUntilFinished wait: Bool) {
         /*
             The base implementation of this method does not call `addOperation()`,
             so we'll call it ourselves.

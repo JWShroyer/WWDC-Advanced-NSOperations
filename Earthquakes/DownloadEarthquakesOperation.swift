@@ -7,8 +7,9 @@ This file contains the code to download the feed of recent earthquakes.
 */
 
 import Foundation
+import TMOperations
 
-class DownloadEarthquakesOperation: GroupOperation {
+class DownloadEarthquakesOperation: TMGroupOperation {
     // MARK: Properties
 
     let cacheFile: URL

@@ -8,6 +8,7 @@ Contains the logic to parse a JSON file of earthquakes and insert them into an N
 
 import Foundation
 import CoreData
+import TMOperations
 
 /// A struct to represent a parsed earthquake.
 private struct ParsedEarthquake {
@@ -59,7 +60,7 @@ private struct ParsedEarthquake {
 }
 
 /// An `Operation` to parse earthquakes out of a downloaded feed from the USGS.
-class ParseEarthquakesOperation: UKOperation {
+class ParseEarthquakesOperation: TMOperation {
     let cacheFile: URL
     let context: NSManagedObjectContext
     

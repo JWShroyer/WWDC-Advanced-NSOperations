@@ -15,11 +15,11 @@ import UIKit
     A condition to indicate an `Operation` requires access to the user's health
     data.
 */
-struct HealthCondition: OperationCondition {
-    static let name = "Health"
+public struct HealthCondition: OperationCondition {
+    public static let name = "Health"
     static let healthDataAvailable = "HealthDataAvailable"
     static let unauthorizedShareTypesKey = "UnauthorizedShareTypes"
-    static let isMutuallyExclusive = false
+    public static let isMutuallyExclusive = false
     
     let shareTypes: Set<HKSampleType>
     let readTypes: Set<HKSampleType>
@@ -33,12 +33,12 @@ struct HealthCondition: OperationCondition {
         - parameter typesToRead: An array of `HKSampleType` objects, indicating
             the kinds of data you wish to read from HealthKit.
     */
-    init(typesToWrite: Set<HKSampleType>, typesToRead: Set<HKSampleType>) {
+    public init(typesToWrite: Set<HKSampleType>, typesToRead: Set<HKSampleType>) {
         shareTypes = typesToWrite
         readTypes = typesToRead
     }
     
-    func dependencyForOperation(operation: Operation) -> Operation? {
+    public func dependencyForOperation(operation: Operation) -> Operation? {
         guard HKHealthStore.isHealthDataAvailable() else {
             return nil
         }
@@ -50,7 +50,7 @@ struct HealthCondition: OperationCondition {
         return HealthPermissionOperation(shareTypes: shareTypes, readTypes: readTypes)
     }
     
-    func evaluateForOperation(operation: Operation, completion: (OperationConditionResult) -> Void) {
+    public func evaluateForOperation(operation: Operation, completion: (OperationConditionResult) -> Void) {
         guard HKHealthStore.isHealthDataAvailable() else {
             failed(unauthorizedShareTypes: shareTypes, completion: completion)
             return
@@ -98,7 +98,7 @@ struct HealthCondition: OperationCondition {
     A private `Operation` that will request access to the user's health data, if
     it has not already been granted.
 */
-private class HealthPermissionOperation: UKOperation {
+private class HealthPermissionOperation: TMOperation {
     let shareTypes: Set<HKSampleType>
     let readTypes: Set<HKSampleType>
     

@@ -15,14 +15,14 @@ import UIKit
     regardless of the activation state of the app. Some kinds network connections
     may fall in to this category, for example.
 */
-class BackgroundObserver: NSObject, OperationObserver {
+public class BackgroundObserver: NSObject, OperationObserver {
     
     // MARK: Properties
 
     private var identifier = UIBackgroundTaskIdentifier.invalid
     private var isInBackground = false
     
-    override init() {
+    override public init() {
         super.init()
         
         // We need to know when the application moves to/from the background.
@@ -73,11 +73,11 @@ class BackgroundObserver: NSObject, OperationObserver {
     
     // MARK: Operation Observer
     
-    func operationDidStart(operation: UKOperation) { }
+    public func operationDidStart(operation: TMOperation) { }
     
-    func operation(operation: UKOperation, didProduceOperation newOperation: Operation) { }
+    public func operation(operation: TMOperation, didProduceOperation newOperation: Operation) { }
 
-    func operationDidFinish(operation: UKOperation, errors: [Error]) {
+    public func operationDidFinish(operation: TMOperation, errors: [Error]) {
         endBackgroundTask()
     }
 }

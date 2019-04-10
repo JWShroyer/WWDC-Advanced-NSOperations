@@ -8,13 +8,13 @@ This file shows how to present an alert as part of an operation.
 
 import UIKit
 
-class AlertOperation: UKOperation {
+open class AlertOperation: TMOperation {
     // MARK: Properties
 
     private let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
     private let presentationContext: UIViewController?
     
-    var title: String? {
+    public var title: String? {
         get {
             return alertController.title
         }
@@ -25,7 +25,7 @@ class AlertOperation: UKOperation {
         }
     }
     
-    var message: String? {
+    public var message: String? {
         get {
             return alertController.message
         }
@@ -37,7 +37,7 @@ class AlertOperation: UKOperation {
     
     // MARK: Initialization
     
-    init(presentationContext: UIViewController? = nil) {
+    public init(presentationContext: UIViewController? = nil) {
         self.presentationContext = presentationContext ?? UIApplication.shared.keyWindow?.rootViewController
 
         super.init()
@@ -52,7 +52,7 @@ class AlertOperation: UKOperation {
         addCondition(condition: MutuallyExclusive<UIViewController>())
     }
     
-    func addAction(title: String, style: UIAlertAction.Style = .default, handler: @escaping (AlertOperation) -> Void = { _ in }) {
+    public func addAction(title: String, style: UIAlertAction.Style = .default, handler: @escaping (AlertOperation) -> Void = { _ in }) {
         let action = UIAlertAction(title: title, style: style) { [weak self] _ in
             if let strongSelf = self {
                 handler(strongSelf)
@@ -64,7 +64,7 @@ class AlertOperation: UKOperation {
         alertController.addAction(action)
     }
     
-    override func execute() {
+    override open func execute() {
         guard let presentationContext = presentationContext else {
             finish()
 

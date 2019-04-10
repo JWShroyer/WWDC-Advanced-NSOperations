@@ -14,25 +14,25 @@ import Foundation
     smaller operations into a larger operation. As an example, the `GetEarthquakesOperation`
     is composed of both a `DownloadEarthquakesOperation` and a `ParseEarthquakesOperation`.
 
-    Additionally, `GroupOperation`s are useful if you establish a chain of dependencies,
+    Additionally, `TMGroupOperation`s are useful if you establish a chain of dependencies,
     but part of the chain may "loop". For example, if you have an operation that
     requires the user to be authenticated, you may consider putting the "login"
     operation inside a group operation. That way, the "login" operation may produce
-    subsequent operations (still within the outer `GroupOperation`) that will all
+    subsequent operations (still within the outer `TMGroupOperation`) that will all
     be executed before the rest of the operations in the initial chain of operations.
 */
-class GroupOperation: UKOperation {
-    private let internalQueue = UKOperationQueue()
+open class TMGroupOperation: TMOperation {
+    private let internalQueue = TMOperationQueue()
     private let startingOperation = BlockOperation(block: {})
     private let finishingOperation = BlockOperation(block: {})
 
     private var aggregatedErrors = [Error]()
     
-    convenience init(operations: Operation...) {
+    public convenience init(operations: Operation...) {
         self.init(operations: operations)
     }
     
-    init(operations: [Operation]) {
+    public init(operations: [Operation]) {
         super.init()
         internalQueue.isSuspended = true
         internalQueue.delegate = self
@@ -43,17 +43,17 @@ class GroupOperation: UKOperation {
         }
     }
     
-    override func cancel() {
+    override open func cancel() {
         internalQueue.cancelAllOperations()
         super.cancel()
     }
     
-    override func execute() {
+    override open func execute() {
         internalQueue.isSuspended = false
         internalQueue.addOperation(finishingOperation)
     }
     
-    func addOperation(operation: Operation) {
+    public func addOperation(operation: Operation) {
         internalQueue.addOperation(operation)
     }
     
@@ -62,17 +62,17 @@ class GroupOperation: UKOperation {
         Errors aggregated through this method will be included in the final array
         of errors reported to observers and to the `finished(_:)` method.
     */
-    final func aggregateError(error: Error) {
+    public final func aggregateError(error: Error) {
         aggregatedErrors.append(error)
     }
     
-    func operationDidFinish(operation: Operation, withErrors errors: [Error]) {
+    open func operationDidFinish(operation: Operation, withErrors errors: [Error]) {
         // For use by subclassers.
     }
 }
 
-extension GroupOperation: UKOperationQueueDelegate {
-    final func operationQueue(operationQueue: UKOperationQueue, willAddOperation operation: Operation) {
+extension TMGroupOperation: TMOperationQueueDelegate {
+    public final func operationQueue(operationQueue: TMOperationQueue, willAddOperation operation: Operation) {
         assert(!finishingOperation.isFinished && !finishingOperation.isExecuting, "cannot add new operations to a group after the group has completed")
         
         /*
@@ -96,7 +96,7 @@ extension GroupOperation: UKOperationQueueDelegate {
         }
     }
     
-    final func operationQueue(operationQueue: UKOperationQueue, operationDidFinish operation: Operation, withErrors errors: [Error]) {
+    public final func operationQueue(operationQueue: TMOperationQueue, operationDidFinish operation: Operation, withErrors errors: [Error]) {
         
         aggregatedErrors += errors
         

@@ -9,20 +9,21 @@ The code in this file loads the data store, updates the model, and displays data
 import UIKit
 import CoreData
 import CloudKit
+import TMOperations
 
 class EarthquakesTableViewController: UITableViewController {
     // MARK: Properties
 
     var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     
-    let operationQueue = UKOperationQueue()
+    let operationQueue = TMOperationQueue()
     
     // MARK: View Controller
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let operation = LoadModelOperation { context in
+        let operation = LoadModelOperation(databaseName: "earthquakes") { context in
             // Now that we have a context, build our `FetchedResultsController`.
             DispatchQueue.main.async {
                 let request = NSFetchRequest<NSFetchRequestResult>(entityName: Earthquake.entityName)
@@ -82,7 +83,7 @@ class EarthquakesTableViewController: UITableViewController {
             to the user about why you were unable to perform the requested action.
         */
         
-        let operation = UKBlockOperation {
+        let operation = TMBlockOperation {
             self.performSegue(withIdentifier: "showEarthquake", sender: nil)
         }
         

@@ -11,14 +11,14 @@ This file shows an example of implementing the OperationCondition protocol.
 import PassKit
 
 /// A condition for verifying that Passbook exists and is accessible.
-struct PassbookCondition: OperationCondition {
+public struct PassbookCondition: OperationCondition {
     
-    static let name = "Passbook"
-    static let isMutuallyExclusive = false
+    public static let name = "Passbook"
+    public static let isMutuallyExclusive = false
     
-    init() { }
+    public init() { }
     
-    func dependencyForOperation(operation: Operation) -> Operation? {
+    public func dependencyForOperation(operation: Operation) -> Operation? {
         /*
             There's nothing you can do to make Passbook available if it's not
             on your device.
@@ -26,7 +26,7 @@ struct PassbookCondition: OperationCondition {
         return nil
     }
     
-    func evaluateForOperation(operation: Operation, completion: (OperationConditionResult) -> Void) {
+    public func evaluateForOperation(operation: Operation, completion: (OperationConditionResult) -> Void) {
         if PKPassLibrary.isPassLibraryAvailable() {
             completion(.satisfied)
         }

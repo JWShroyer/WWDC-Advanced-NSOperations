@@ -9,9 +9,9 @@ This file shows an example of implementing the OperationCondition protocol.
 import CloudKit
 
 /// A condition describing that the operation requires access to a specific CloudKit container.
-struct CloudContainerCondition: OperationCondition {
+public struct CloudContainerCondition: OperationCondition {
     
-    static let name = "CloudContainer"
+    public static let name = "CloudContainer"
     static let containerKey = "CKContainer"
     
     /*
@@ -19,7 +19,7 @@ struct CloudContainerCondition: OperationCondition {
         so we will allow operations that use CloudKit to be concurrent with each
         other.
     */
-    static let isMutuallyExclusive = false
+    public static let isMutuallyExclusive = false
     
     let container: CKContainer // this is the container to which you need access.
 
@@ -31,16 +31,16 @@ struct CloudContainerCondition: OperationCondition {
             container. This parameter has a default value of `[]`, which would get
             you anonymized read/write access.
     */
-    init(container: CKContainer, permission: CKContainer_Application_Permissions = []) {
+    public init(container: CKContainer, permission: CKContainer_Application_Permissions = []) {
         self.container = container
         self.permission = permission
     }
     
-    func dependencyForOperation(operation: Operation) -> Operation? {
+    public func dependencyForOperation(operation: Operation) -> Operation? {
         return CloudKitPermissionOperation(container: container, permission: permission)
     }
     
-    func evaluateForOperation(operation: Operation, completion: @escaping (OperationConditionResult) -> Void) {
+    public func evaluateForOperation(operation: Operation, completion: @escaping (OperationConditionResult) -> Void) {
         container.verifyPermission(permission: permission, requestingIfNecessary: false) { error in
             if let error = error {
                 let typeOfSelf = type(of: self)
@@ -64,7 +64,7 @@ struct CloudContainerCondition: OperationCondition {
     This operation asks the user for permission to use CloudKit, if necessary.
     If permission has already been granted, this operation will quickly finish.
 */
-private class CloudKitPermissionOperation: UKOperation {
+private class CloudKitPermissionOperation: TMOperation {
     let container: CKContainer
     let permission: CKContainer_Application_Permissions
     

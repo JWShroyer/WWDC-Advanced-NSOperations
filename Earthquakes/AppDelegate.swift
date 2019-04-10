@@ -7,6 +7,7 @@ The app delegate. This, by design, has almost no implementation.
 */
 
 import UIKit
+import TMOperations
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

@@ -12,30 +12,32 @@ import CoreData
     An `Operation` subclass that loads the Core Data stack. If this operation fails,
     it will produce an `AlertOperation` that will offer to retry the operation.
 */
-class LoadModelOperation: UKOperation {
+open class LoadModelOperation: TMOperation {
     // MARK: Properties
 
     let loadHandler: (NSManagedObjectContext) -> Void
+    let databaseName: String
     
     // MARK: Initialization
     
-    init(loadHandler: @escaping (NSManagedObjectContext) -> Void) {
+    public init(databaseName: String, loadHandler: @escaping (NSManagedObjectContext) -> Void) {
         self.loadHandler = loadHandler
-
+        self.databaseName = databaseName
+        
         super.init()
         
         // We only want one of these going at a time.
         addCondition(condition: MutuallyExclusive<LoadModelOperation>())
     }
     
-    override func execute() {
+    override open func execute() {
         /*
             We're not going to handle catching the error here, because if we can't
             get the Caches directory, then your entire sandbox is broken and
             there's nothing we can possibly do to fix it.
         */
         let cachesFolder = try! FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let storeURL = cachesFolder.appendingPathComponent("earthquakes.sqlite")
+        let storeURL = cachesFolder.appendingPathComponent(self.databaseName).appendingPathExtension("sqlite")
         
         /*
             Force unwrap this model, because this would only fail if we haven't
@@ -95,7 +97,7 @@ class LoadModelOperation: UKOperation {
         catch { }
     }
     
-    override func finished(errors: [Error]) {
+    override open func finished(errors: [Error]) {
         guard let firstError = errors.first, userInitiated else { return }
 
         /*
@@ -122,8 +124,9 @@ class LoadModelOperation: UKOperation {
             simply by creating a new copy of the operation and giving it the same
             loadHandler.
         */
-        alert.addAction(title: "Retry Now") { alertOperation in
-            let retryOperation = LoadModelOperation(loadHandler: handler)
+        alert.addAction(title: "Retry Now") { [weak self] alertOperation in
+            guard let strongSelf = self else { return }
+            let retryOperation = LoadModelOperation(databaseName: strongSelf.databaseName, loadHandler: handler)
 
             retryOperation.userInitiated = true
             
